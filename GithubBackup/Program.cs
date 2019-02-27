@@ -1,10 +1,11 @@
-﻿using McMaster.Extensions.CommandLineUtils;
-using System;
+﻿using Autofac;
+using LibGit2Sharp;
 
 namespace GithubBackup
 {
     class Program
     {
+        // https://github.com/natemcmaster/CommandLineUtils
         // https://github.com/iamarcel/dotnet-core-neat-console-starter
         // https://gist.github.com/iamarcel/8047384bfbe9941e52817cf14a79dc34
         // https://gist.github.com/iamarcel/9bdc3f40d95c13f80d259b7eb2bbcabb
@@ -13,50 +14,16 @@ namespace GithubBackup
 
         static int Main(string[] args)
         {
-            var app = new CommandLineApplication();
-            app.Name = "github-backup";
-            app.Description = "Clones all git repositories of a user.";
-            app.HelpOption(true);
+            var builder = new ContainerBuilder();
+            builder.RegisterType<BackupService>().AsSelf();
+            builder.RegisterType<Credentials>();
+            builder.RegisterType<GithubBackupCmdWrapper>().AsSelf();
+            builder.RegisterType<CredentialCmdWrapper>().AsSelf();
+            builder.RegisterType<TokenCmdWrapper>().AsSelf();
 
-            app.Command("credential-based", (credentialBasedCmd) =>
-            {
-
-                var userNameArgument = credentialBasedCmd.Argument("Username", "Your git username or mail.").IsRequired();
-                var passwordArgument = credentialBasedCmd.Argument("Password", "Your git password.").IsRequired();
-                var destinationArgument = credentialBasedCmd.Argument("Destination", "The destination folder for the backup.");
-
-                credentialBasedCmd.OnExecute(() =>
-                {
-                    Console.WriteLine($"Loggin in using {userNameArgument.Value} / {passwordArgument.Value}");
-                    Console.WriteLine("Creating a credential based backup.");
-                });
-            });
-
-            app.Command("token-based", (tokenBasedCmd) =>
-            {
-                var tokenArgument = tokenBasedCmd.Argument("Token", "Your git token with sufficient rights.").IsRequired();
-                var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.");
-
-                tokenBasedCmd.OnExecute(() =>
-                {
-                    Console.WriteLine($"Logging in using token {tokenArgument.Value}");
-                    Console.WriteLine("Creating a token based backup.");
-                });
-            });
-
-            app.OnExecute(() =>
-            {
-                Console.WriteLine("Specify a subcommand");
-                app.ShowHelp();
-                return 1;
-            });
-
-
-            //new BackupService();
-
-            //Console.ReadLine();
-
-            return app.Execute(args);
+            var container = builder.Build();
+            var githubBackupCmdWrapper = container.Resolve<GithubBackupCmdWrapper>();
+            return githubBackupCmdWrapper.Command.Execute(args);
         }
     }
 }
