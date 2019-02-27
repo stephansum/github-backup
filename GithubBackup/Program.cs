@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using LibGit2Sharp;
+using Octokit;
+using System.Reflection;
 
 namespace GithubBackup
 {
@@ -15,11 +16,16 @@ namespace GithubBackup
         static int Main(string[] args)
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<BackupService>().AsSelf();
-            builder.RegisterType<Credentials>();
-            builder.RegisterType<GithubBackupCmdWrapper>().AsSelf();
-            builder.RegisterType<CredentialCmdWrapper>().AsSelf();
-            builder.RegisterType<TokenCmdWrapper>().AsSelf();
+
+            // Registering types within the assembly:
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AsSelf();
+            //builder.RegisterType<BackupService>().AsSelf();
+            //builder.RegisterType<GithubBackupCmdWrapper>().AsSelf();
+            //builder.RegisterType<CredentialCmdWrapper>().AsSelf();
+            //builder.RegisterType<TokenCmdWrapper>().AsSelf();
+
+            // Registering types of 3rd party assemblies
+            builder.RegisterType<Credentials>().AsSelf();
 
             var container = builder.Build();
             var githubBackupCmdWrapper = container.Resolve<GithubBackupCmdWrapper>();

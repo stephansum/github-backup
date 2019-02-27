@@ -19,6 +19,7 @@ namespace GithubBackup
             Func<string, string, AuthenticationType, Credentials> credentialsFactory)
         {
             ParentCommand = parentCommand;
+
             BackupServiceFactory = backupServiceFactory;
             CredentialsFactory = credentialsFactory;
 
