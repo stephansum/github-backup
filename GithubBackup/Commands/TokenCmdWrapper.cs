@@ -39,7 +39,7 @@ namespace GithubBackup
                     var destinationFolder = string.IsNullOrWhiteSpace(destinationArgument.Value) ? currentFolder : destinationArgument.Value;
                     var backupService = BackupServiceFactory(credentials, destinationFolder);
 
-                    backupService.DisplayUserData();
+                    backupService.GetUserData();
                     var repos = backupService.GetRepos();
 
                     foreach (var repo in repos)
