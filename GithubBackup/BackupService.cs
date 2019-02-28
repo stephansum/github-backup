@@ -67,14 +67,13 @@ namespace GithubBackup
             Console.WriteLine($"Finished cloning all {repos.Count} repos.");
         }
 
-        public void DisplayUserData()
+        public User GetUserData()
         {
             var client = CreateGithubClient(Credentials);
             var userTask = client.User.Current();
             userTask.Wait();
             var user = userTask.Result;
-
-            Console.WriteLine($"Hello {user.Name} (Id: {user.Id}),");
+            return user;
         }
 
 

@@ -9,14 +9,18 @@ namespace GithubBackup
 
         public CommandLineApplication ParentCommand { get; set; }
         public CommandLineApplication Command { get; set; }
+
+        // a custom delegate s required because autofac cant handle Func<T1, T1, T2> delegates when we deal with multiple parameters of the same Type (T1)
+        // in order for the reflection magic to work, the parameter names of the delegate (e.g. "login", "password" ..) must literally match the naming of the parameters in the constructor of the type that is being created (e.g. public Credentials (string login, ..))
+        public delegate Credentials CredentialsFactoryDelegate(string login, string password, AuthenticationType authenticationType);
+        public CredentialsFactoryDelegate CredentialsFactory { get; set; }
         public Func<Credentials, string, BackupService> BackupServiceFactory { get; set; }
-        public Func<string, string, AuthenticationType, Credentials> CredentialsFactory { get; set; }
 
 
         public CredentialCmdWrapper(
             CommandLineApplication parentCommand, 
             Func<Credentials, string, BackupService> backupServiceFactory,
-            Func<string, string, AuthenticationType, Credentials> credentialsFactory)
+            CredentialsFactoryDelegate credentialsFactory)
         {
             ParentCommand = parentCommand;
 
@@ -36,6 +40,9 @@ namespace GithubBackup
                 {
                     var credentials = CredentialsFactory(userNameArgument.Value, passwordArgument.Value, AuthenticationType.Basic);
                     var backupService = BackupServiceFactory(credentials, destinationArgument.Value);
+
+                    var user = backupService.GetUserData();
+                    Console.WriteLine($"Hello {user.Name}!");
                 });
             });
         }

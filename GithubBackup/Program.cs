@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using Autofac.Builder;
+using Autofac.Core;
 using Octokit;
 using System.Reflection;
 
@@ -26,6 +28,7 @@ namespace GithubBackup
 
             // Registering types of 3rd party assemblies
             builder.RegisterType<Credentials>().AsSelf();
+            builder.RegisterGeneratedFactory<CredentialCmdWrapper.CredentialsFactoryDelegate>(new TypedService(typeof(Credentials)));
 
             var container = builder.Build();
             var githubBackupCmdWrapper = container.Resolve<GithubBackupCmdWrapper>();
