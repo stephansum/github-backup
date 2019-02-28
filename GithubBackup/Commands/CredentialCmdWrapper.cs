@@ -1,6 +1,7 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using Octokit;
 using System;
+using System.IO;
 
 namespace GithubBackup
 {
@@ -39,10 +40,18 @@ namespace GithubBackup
                 credentialBasedCmd.OnExecute(() =>
                 {
                     var credentials = CredentialsFactory(userNameArgument.Value, passwordArgument.Value, AuthenticationType.Basic);
-                    var backupService = BackupServiceFactory(credentials, destinationArgument.Value);
+
+                    var currentFolder = Directory.GetCurrentDirectory();
+                    var destinationFolder = string.IsNullOrWhiteSpace(destinationArgument.Value) ? currentFolder : destinationArgument.Value;
+
+                    var backupService = BackupServiceFactory(credentials, destinationFolder);
 
                     var user = backupService.GetUserData();
                     Console.WriteLine($"Hello {user.Name}!");
+
+                    var repos = backupService.GetRepos();
+
+                    backupService.CloneRepos(repos);
                 });
             });
         }

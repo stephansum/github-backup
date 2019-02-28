@@ -29,7 +29,8 @@ namespace GithubBackup
                 tokenBasedCmd.Description = "Creates a github backup. Authentification is done via tokens.";
 
                 var tokenArgument = tokenBasedCmd.Argument("Token", "Your git token with sufficient rights.").IsRequired();
-                var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.");
+                var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.")
+                                            .Accepts(v => v.ExistingDirectory());
 
                 tokenBasedCmd.OnExecute(() =>
                 {
