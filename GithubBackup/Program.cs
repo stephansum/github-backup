@@ -42,7 +42,7 @@ namespace GithubBackup
             {
                 Console.WriteLine(ex.Message);
             }
-            
+
             return result;
         }
     }

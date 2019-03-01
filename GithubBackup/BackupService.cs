@@ -29,7 +29,7 @@ namespace GithubBackup
 
         private IReadOnlyList<Repository> GetRepos()
         {
-            var client = CreateGithubClient(Credentials);
+            var client = CreateGithubClient();
             var task = client.Repository.GetAllForCurrent();
             task.Wait();
             var repos = task.Result;
@@ -110,18 +110,27 @@ namespace GithubBackup
 
         public User GetUserData()
         {
-            var client = CreateGithubClient(Credentials);
-            var userTask = client.User.Current();
-            userTask.Wait();
-            var user = userTask.Result;
+            var client = CreateGithubClient();
+
+            User user = null;
+            try
+            {
+                var userTask = client.User.Current();
+                userTask.Wait();
+                user = userTask.Result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             return user;
         }
 
 
-        private GitHubClient CreateGithubClient(Credentials credentials)
+        private GitHubClient CreateGithubClient()
         {
-            var client = new GitHubClient(new ProductHeaderValue(credentials.Login));
-            client.Credentials = credentials;
+            var client = new GitHubClient(new ProductHeaderValue(Credentials.Login));
+            client.Credentials = Credentials;
             return client;
         }
 

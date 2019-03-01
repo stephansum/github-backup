@@ -12,12 +12,12 @@ namespace GithubBackup
         public CommandLineApplication Command { get; set; }
 
         public Func<Credentials, string, BackupService> BackupServiceFactory { get; set; }
-        public Func<string, AuthenticationType, Credentials> CredentialsFactory { get; set; }
+        public Func<string, Credentials> CredentialsFactory { get; set; }
 
         public TokenCommand(
             CommandLineApplication parentCommand,
             Func<Credentials, string, BackupService> backupServiceFactory,
-            Func<string, AuthenticationType, Credentials> credentialsFactory)
+            Func<string, Credentials> credentialsFactory)
         {
             ParentCommand = parentCommand;
 
@@ -35,7 +35,7 @@ namespace GithubBackup
 
                 tokenBasedCmd.OnExecute(() =>
                 {
-                    var credentials = CredentialsFactory(tokenArgument.Value, AuthenticationType.Oauth);
+                    var credentials = CredentialsFactory(tokenArgument.Value);
 
                     var currentFolder = Directory.GetCurrentDirectory();
                     var destinationFolder = string.IsNullOrWhiteSpace(destinationArgument.Value) ? currentFolder : destinationArgument.Value;
