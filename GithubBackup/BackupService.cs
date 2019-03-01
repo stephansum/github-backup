@@ -21,7 +21,13 @@ namespace GithubBackup
             Credentials = credentials;
         }
 
-        public IReadOnlyList<Repository> GetRepos()
+        public void CreateBackup()
+        {
+            var repos = GetRepos();
+            CloneRepos(repos);
+        }
+
+        private IReadOnlyList<Repository> GetRepos()
         {
             var client = CreateGithubClient(Credentials);
             var task = client.Repository.GetAllForCurrent();
@@ -38,14 +44,12 @@ namespace GithubBackup
 
             var rootProgressBarOptions = new ProgressBarOptions
             {
-                ForegroundColor = ConsoleColor.Green,
-                BackgroundColor = ConsoleColor.DarkGreen,
-                ProgressCharacter = '─',
+                ForegroundColor = ConsoleColor.Magenta,
                 CollapseWhenFinished = false,
                 EnableTaskBarProgress = true,
             };
 
-            var rootProgressBar = new ProgressBar(repos.Count, "Cloning");
+            var rootProgressBar = new ProgressBar(repos.Count, "Overall", rootProgressBarOptions);
 
             Parallel.ForEach(repos, (repo) =>
             {
@@ -69,8 +73,17 @@ namespace GithubBackup
                     progressBar?.Dispose();
                 };
 
-                cloneOptions.CredentialsProvider = (url, user, cred)
+                if (Credentials.AuthenticationType == AuthenticationType.Basic)
+                {
+                    cloneOptions.CredentialsProvider = (url, user, cred)
                     => new LibGit2Sharp.UsernamePasswordCredentials { Username = Credentials.Login, Password = Credentials.Password };
+                }
+                else if (Credentials.AuthenticationType == AuthenticationType.Oauth)
+                {
+                    cloneOptions.CredentialsProvider = (url, user, cred)
+                        => new LibGit2Sharp.UsernamePasswordCredentials { Username = Credentials.GetToken(), Password = string.Empty };
+                }
+
                 try
                 {
                     LibGit2Sharp.Repository.Clone(repo.CloneUrl, repoDestination, cloneOptions);
@@ -86,32 +99,13 @@ namespace GithubBackup
             rootProgressBar.Dispose();
 
             Console.WriteLine($"Finished cloning all {repos.Count} repos.");
+
             foreach (var repoName in _exceptions.Keys)
             {
                 Console.WriteLine();
                 Console.WriteLine($"Error while cloning {repoName}:");
                 Console.WriteLine(_exceptions[repoName]);
             }
-        }
-
-        public void CloneRepos(IReadOnlyList<Repository> repos, string token, string destinationRootFolder)
-        {
-            var cloneOptions = new LibGit2Sharp.CloneOptions();
-
-            cloneOptions.CredentialsProvider = (url, user, cred)
-                => new LibGit2Sharp.UsernamePasswordCredentials { Username = token, Password = string.Empty };
-
-            Console.WriteLine($"Starting to clone all repos to {destinationRootFolder}");
-
-            Parallel.ForEach(repos, (repo) =>
-            {
-                var destination = Path.Combine(destinationRootFolder, repo.Name);
-                Console.WriteLine($"Starting to clone {repo.Name}");
-                LibGit2Sharp.Repository.Clone(repo.CloneUrl, destination, cloneOptions);
-                Console.WriteLine($"Finished to clone {repo.Name}");
-            });
-
-            Console.WriteLine($"Finished cloning all {repos.Count} repos.");
         }
 
         public User GetUserData()
