@@ -3,13 +3,13 @@ using System;
 
 namespace GithubBackup
 {
-    public class GithubBackupCommand
+    public class BackupCommand
     {
         public CommandLineApplication Command { get; set; }
 
-        public GithubBackupCommand(
-            Func<CommandLineApplication, CredentialCommand> credentialCmdWrapperFactory,
-            Func<CommandLineApplication, TokenCommand> tokenCmdWrapperFactory)
+        public BackupCommand(
+            Func<CommandLineApplication, CredentialSubCommand> credentialCmdWrapperFactory,
+            Func<CommandLineApplication, TokenSubCommand> tokenCmdWrapperFactory)
         {
             Command = new CommandLineApplication();
             Command.ThrowOnUnexpectedArgument = true;
