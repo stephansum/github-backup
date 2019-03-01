@@ -5,7 +5,7 @@ using System.IO;
 
 namespace GithubBackup
 {
-    public class TokenCmdWrapper
+    public class TokenCommand
     {
 
         public CommandLineApplication ParentCommand { get; set; }
@@ -14,7 +14,7 @@ namespace GithubBackup
         public Func<Credentials, string, BackupService> BackupServiceFactory { get; set; }
         public Func<string, AuthenticationType, Credentials> CredentialsFactory { get; set; }
 
-        public TokenCmdWrapper(
+        public TokenCommand(
             CommandLineApplication parentCommand,
             Func<Credentials, string, BackupService> backupServiceFactory,
             Func<string, AuthenticationType, Credentials> credentialsFactory)
@@ -26,9 +26,10 @@ namespace GithubBackup
 
             Command = ParentCommand.Command("token-based", (tokenBasedCmd) =>
             {
-                tokenBasedCmd.Description = "Creates a github backup. Authentification is done via tokens.";
+                tokenBasedCmd.Description = "Using a token-based authentication.";
+                tokenBasedCmd.ThrowOnUnexpectedArgument = true;
 
-                var tokenArgument = tokenBasedCmd.Argument("Token", "Your git token with sufficient rights.").IsRequired();
+                var tokenArgument = tokenBasedCmd.Argument("Token", "A valid github token.").IsRequired();
                 var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.")
                                             .Accepts(v => v.ExistingDirectory());
 
@@ -38,17 +39,15 @@ namespace GithubBackup
 
                     var currentFolder = Directory.GetCurrentDirectory();
                     var destinationFolder = string.IsNullOrWhiteSpace(destinationArgument.Value) ? currentFolder : destinationArgument.Value;
+
                     var backupService = BackupServiceFactory(credentials, destinationFolder);
 
-                    backupService.GetUserData();
-                    var repos = backupService.GetRepos();
+                    var user = backupService.GetUserData();
 
-                    foreach (var repo in repos)
-                    {
-                        Console.WriteLine(repo.FullName);
-                    }
+                    Console.WriteLine($"Hello {user.Name}!");
+                    Console.WriteLine();
 
-                    backupService.CloneRepos(repos);
+                    backupService.CreateBackup();
                 });
             });
         }

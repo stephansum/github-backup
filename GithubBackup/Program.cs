@@ -2,6 +2,7 @@
 using Autofac.Builder;
 using Autofac.Core;
 using Octokit;
+using System;
 using System.Reflection;
 
 namespace GithubBackup
@@ -12,8 +13,6 @@ namespace GithubBackup
         // https://github.com/iamarcel/dotnet-core-neat-console-starter
         // https://gist.github.com/iamarcel/8047384bfbe9941e52817cf14a79dc34
         // https://gist.github.com/iamarcel/9bdc3f40d95c13f80d259b7eb2bbcabb
-
-        // dotnet .\GithubBackup.dll token-based  --help
 
         static int Main(string[] args)
         {
@@ -28,11 +27,23 @@ namespace GithubBackup
 
             // Registering types of 3rd party assemblies
             builder.RegisterType<Credentials>().AsSelf();
-            builder.RegisterGeneratedFactory<CredentialCmdWrapper.CredentialsFactoryDelegate>(new TypedService(typeof(Credentials)));
+            builder.RegisterGeneratedFactory<CredentialCommand.CredentialsFactoryDelegate>(new TypedService(typeof(Credentials)));
 
             var container = builder.Build();
-            var githubBackupCmdWrapper = container.Resolve<GithubBackupCmdWrapper>();
-            return githubBackupCmdWrapper.Command.Execute(args);
+            var githubBackupCmdWrapper = container.Resolve<GithubBackupCommand>();
+
+            int result = -1;
+
+            try
+            {
+                result = githubBackupCmdWrapper.Command.Execute(args);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
+            return result;
         }
     }
 }

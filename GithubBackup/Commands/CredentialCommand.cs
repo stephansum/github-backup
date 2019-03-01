@@ -5,7 +5,7 @@ using System.IO;
 
 namespace GithubBackup
 {
-    public class CredentialCmdWrapper
+    public class CredentialCommand
     {
 
         public CommandLineApplication ParentCommand { get; set; }
@@ -18,7 +18,7 @@ namespace GithubBackup
         public Func<Credentials, string, BackupService> BackupServiceFactory { get; set; }
 
 
-        public CredentialCmdWrapper(
+        public CredentialCommand(
             CommandLineApplication parentCommand, 
             Func<Credentials, string, BackupService> backupServiceFactory,
             CredentialsFactoryDelegate credentialsFactory)
@@ -31,9 +31,11 @@ namespace GithubBackup
 
             Command = ParentCommand.Command("credential-based", (credentialBasedCmd) =>
             {
-                credentialBasedCmd.Description = "Creates a github backup. Authentification is done via user credentials.";
-                var userNameArgument = credentialBasedCmd.Argument("Username", "Your git username or mail.").IsRequired();
-                var passwordArgument = credentialBasedCmd.Argument("Password", "Your git password.").IsRequired();
+                credentialBasedCmd.Description = "Using a credential-based authentication.";
+                credentialBasedCmd.ThrowOnUnexpectedArgument = true;
+
+                var userNameArgument = credentialBasedCmd.Argument("Username", "Github login (either username or email)").IsRequired();
+                var passwordArgument = credentialBasedCmd.Argument("Password", "Github password.").IsRequired();
                 var destinationArgument = credentialBasedCmd.Argument("Destination", "The destination folder for the backup.")
                                             .Accepts(v => v.ExistingDirectory());
 
@@ -47,11 +49,11 @@ namespace GithubBackup
                     var backupService = BackupServiceFactory(credentials, destinationFolder);
 
                     var user = backupService.GetUserData();
+
                     Console.WriteLine($"Hello {user.Name}!");
+                    Console.WriteLine();
 
-                    var repos = backupService.GetRepos();
-
-                    backupService.CloneRepos(repos);
+                    backupService.CreateBackup();
                 });
             });
         }
