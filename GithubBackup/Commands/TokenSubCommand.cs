@@ -5,7 +5,7 @@ using System.IO;
 
 namespace GithubBackup
 {
-    public class TokenCommand
+    public class TokenSubCommand
     {
 
         public CommandLineApplication ParentCommand { get; set; }
@@ -14,7 +14,7 @@ namespace GithubBackup
         public Func<Credentials, string, BackupService> BackupServiceFactory { get; set; }
         public Func<string, Credentials> CredentialsFactory { get; set; }
 
-        public TokenCommand(
+        public TokenSubCommand(
             CommandLineApplication parentCommand,
             Func<Credentials, string, BackupService> backupServiceFactory,
             Func<string, Credentials> credentialsFactory)

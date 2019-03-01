@@ -27,10 +27,10 @@ namespace GithubBackup
 
             // Registering types of 3rd party assemblies
             builder.RegisterType<Credentials>().AsSelf();
-            builder.RegisterGeneratedFactory<CredentialCommand.CredentialsFactoryDelegate>(new TypedService(typeof(Credentials)));
+            builder.RegisterGeneratedFactory<CredentialSubCommand.CredentialsFactoryDelegate>(new TypedService(typeof(Credentials)));
 
             var container = builder.Build();
-            var githubBackupCmdWrapper = container.Resolve<GithubBackupCommand>();
+            var githubBackupCmdWrapper = container.Resolve<BackupCommand>();
 
             int result = -1;
 
