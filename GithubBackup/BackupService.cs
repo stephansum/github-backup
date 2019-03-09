@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GithubBackup
@@ -16,15 +17,40 @@ namespace GithubBackup
 
         public BackupService(Credentials credentials, string destination)
         {
-            var backupFolderName = $"Backup [{DateTime.Now.ToString("yyyy-MM-dd HH-mm", CultureInfo.InvariantCulture)}]";
+            var backupFolderName = $"Github Backup [{DateTime.Now.ToString("yyyy-MM-dd HH-mm", CultureInfo.InvariantCulture)}]";
             Destination = Path.Combine(destination, backupFolderName);
             Credentials = credentials;
         }
 
         public void CreateBackup()
         {
+            var user = GetUserData();
+
+            Console.WriteLine($"Hello {user.Name}!");
+            Console.WriteLine();
+
             var repos = GetRepos();
-            CloneRepos(repos);
+
+            Console.WriteLine($"Total repositories found: {repos.Count}");
+            Console.WriteLine($"Backup destination folder: {Destination}");
+
+            Console.WriteLine($"Starting to clone all repositories");
+
+            var exceptions = CloneRepos(repos);
+
+            if (exceptions.Any())
+            {
+                Console.WriteLine($"Backup finished with {exceptions.Count} errors:");
+
+                foreach (var repoName in exceptions.Keys)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"Error while cloning {repoName}:");
+                    Console.WriteLine(exceptions[repoName]);
+                }
+            }
+            else
+                Console.WriteLine("Backup finished successfully");
         }
 
         private IReadOnlyList<Repository> GetRepos()
@@ -36,11 +62,9 @@ namespace GithubBackup
             return repos;
         }
 
-        private Dictionary<string, Exception> _exceptions = new Dictionary<string, Exception>();
-
-        public void CloneRepos(IReadOnlyList<Repository> repos)
+        private  Dictionary<string, Exception> CloneRepos(IReadOnlyList<Repository> repos)
         {
-            Console.WriteLine($"Starting to clone all repos to {Destination}");
+            var exceptions = new Dictionary<string, Exception>();
 
             var rootProgressBarOptions = new ProgressBarOptions
             {
@@ -90,7 +114,7 @@ namespace GithubBackup
                 }
                 catch (Exception ex)
                 {
-                    _exceptions[repo.FullName] = ex;
+                    exceptions[repo.FullName] = ex;
                 }
 
                 rootProgressBar.Tick();
@@ -98,17 +122,10 @@ namespace GithubBackup
 
             rootProgressBar.Dispose();
 
-            Console.WriteLine($"Finished cloning all {repos.Count} repos.");
-
-            foreach (var repoName in _exceptions.Keys)
-            {
-                Console.WriteLine();
-                Console.WriteLine($"Error while cloning {repoName}:");
-                Console.WriteLine(_exceptions[repoName]);
-            }
+            return exceptions;
         }
 
-        public User GetUserData()
+        private User GetUserData()
         {
             var client = CreateGithubClient();
 
