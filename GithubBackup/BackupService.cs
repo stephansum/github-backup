@@ -27,7 +27,6 @@ namespace GithubBackup
             var user = GetUserData();
 
             Console.WriteLine($"Hello {user.Name}!");
-            Console.WriteLine();
 
             var repos = GetRepos();
 
@@ -68,7 +67,7 @@ namespace GithubBackup
 
             var rootProgressBarOptions = new ProgressBarOptions
             {
-                ForegroundColor = ConsoleColor.DarkMagenta,
+                ForegroundColor = ConsoleColor.Cyan,
                 CollapseWhenFinished = false,
                 EnableTaskBarProgress = true,
             };
