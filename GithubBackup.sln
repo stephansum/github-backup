@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GithubBackup", "GithubBackup\GithubBackup.csproj", "{9E9F41C9-BFEE-4352-AC76-A81090120FE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GithubBackup", "GithubBackup\GithubBackup.csproj", "{9E9F41C9-BFEE-4352-AC76-A81090120FE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6762D427-44B6-45D1-BD69-9F007975C95C}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
