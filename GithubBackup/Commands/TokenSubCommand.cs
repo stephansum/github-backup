@@ -42,11 +42,6 @@ namespace GithubBackup
 
                     var backupService = BackupServiceFactory(credentials, destinationFolder);
 
-                    var user = backupService.GetUserData();
-
-                    Console.WriteLine($"Hello {user.Name}!");
-                    Console.WriteLine();
-
                     backupService.CreateBackup();
                 });
             });
