@@ -11,6 +11,8 @@ You can choose between credential- or token-based authentication.
 
 </br>
 
+![github-backup screenshot](screenshot.png?raw=true "github-backup screenshot")
+
 ## Usage
 
 ##### creating a backup with credential-based authentification:
@@ -42,7 +44,7 @@ $ github-backup credential-based <token> <destination>
 
 </br>
 
-## Build (win-x64)
+## Building
 
 So far I tested the application only on win-x64 systems, but it might also work on different platforms.
 
