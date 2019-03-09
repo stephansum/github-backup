@@ -68,12 +68,12 @@ namespace GithubBackup
 
             var rootProgressBarOptions = new ProgressBarOptions
             {
-                ForegroundColor = ConsoleColor.Magenta,
+                ForegroundColor = ConsoleColor.DarkMagenta,
                 CollapseWhenFinished = false,
                 EnableTaskBarProgress = true,
             };
 
-            var rootProgressBar = new ProgressBar(repos.Count, "Overall", rootProgressBarOptions);
+            var rootProgressBar = new ProgressBar(repos.Count, "Overall Progress", rootProgressBarOptions);
 
             Parallel.ForEach(repos, (repo) =>
             {
