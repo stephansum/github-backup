@@ -39,7 +39,7 @@ $ github-backup credential-based <username> <password> <destination>
 
 ##### creating a backup with token-based authentification and custom backup destination:
 ```bash
-$ github-backup credential-based <token> <destination>
+$ github-backup token-based <token> <destination>
 ```
 
 </br>
