@@ -18,35 +18,21 @@ You can choose between credential- or token-based authentication.
 ##### creating a backup with credential-based authentification:
 
 ```bash
-$ github-backup credential-based <username> <password> 
+$ github-backup credential-based <username> <password> [<destination>]
 ```
 
 </br>
 
 ##### creating a backup with token-based authentification:
 ```bash
-$ github-backup token-based <token>
-```
-
-</br>
-
-##### creating a backup with credential-based authentification and custom backup destination:
-```bash
-$ github-backup credential-based <username> <password> <destination>
-```
-
-</br>
-
-##### creating a backup with token-based authentification and custom backup destination:
-```bash
-$ github-backup token-based <token> <destination>
+$ github-backup token-based <token> [<destination>]
 ```
 
 </br>
 
 ## Building
 
-So far I tested the application only on win-x64 systems, but it might also work on different platforms.
+So far I build the application only for win-x64 systems, but it might also work on different platforms.
 
 ```bash
 $ dotnet publish -r win-x64 -c release /p:TrimUnusedDependencies=true
