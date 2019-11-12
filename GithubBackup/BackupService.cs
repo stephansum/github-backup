@@ -81,6 +81,7 @@ namespace GithubBackup
                 ChildProgressBar progressBar = null;
 
                 var cloneOptions = new LibGit2Sharp.CloneOptions();
+                cloneOptions.RecurseSubmodules = true;
                 cloneOptions.OnTransferProgress = (progress) =>
                 {
                     if (progressBar == null)
