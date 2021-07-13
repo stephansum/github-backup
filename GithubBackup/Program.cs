@@ -15,6 +15,7 @@ namespace GithubBackup
 
             try
             {
+                Console.Clear();
                 SetupIocContainer();
                 var githubBackupCmdWrapper = _container.Resolve<BackupCommand>();
                 result = githubBackupCmdWrapper.Command.Execute(args);
