@@ -11,6 +11,8 @@ If you dont provide a destination folder, the backup will be created in your cur
 
 ![github-backup screenshot](screenshot.png?raw=true "github-backup screenshot")
 
+</br>
+
 ## Usage
 
 ```bash
@@ -23,11 +25,12 @@ You can create a personal access token here: https://github.com/settings/tokens/
 
 ## Building
 
-So far I tested the application only for win10-x64 systems, but it might also work on different platforms.
-
 ```bash
-$ dotnet publish -r win10-x64 -c release -p:PublishTrimmed=True
+$ dotnet publish -r win10-x64 -c release
 ```
+
+So far I tested the application only for win10-x64 systems, but it might also work on other platforms.
+
 
 </br>
 
