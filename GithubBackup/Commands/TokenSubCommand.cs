@@ -30,7 +30,7 @@ namespace GithubBackup
                 tokenBasedCmd.UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw;
 
                 var tokenArgument = tokenBasedCmd.Argument("Token", "A valid github token.").IsRequired();
-                var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.").Accepts(v => v.ExistingDirectory());
+                var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.");
 
                 tokenBasedCmd.OnExecute(() =>
                 {
@@ -38,6 +38,9 @@ namespace GithubBackup
 
                     var currentFolder = Directory.GetCurrentDirectory();
                     var destinationFolder = string.IsNullOrWhiteSpace(destinationArgument.Value) ? currentFolder : destinationArgument.Value;
+
+                    if (!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
 
                     var backupService = BackupServiceFactory(credentials, destinationFolder);
 
