@@ -7,12 +7,10 @@ namespace GithubBackup
     {
         public CommandLineApplication Command { get; set; }
 
-        public BackupCommand(
-            Func<CommandLineApplication, CredentialSubCommand> credentialCmdWrapperFactory,
-            Func<CommandLineApplication, TokenSubCommand> tokenCmdWrapperFactory)
+        public BackupCommand(Func<CommandLineApplication, TokenSubCommand> tokenCmdWrapperFactory)
         {
             Command = new CommandLineApplication();
-            Command.ThrowOnUnexpectedArgument = true;
+            Command.UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw;
             Command.Name = "github-backup";
             Command.Description = "Creates a local backup of all repositories of a given github user.";
             Command.HelpOption(true);
@@ -26,7 +24,6 @@ namespace GithubBackup
                 return 1;
             });
 
-            credentialCmdWrapperFactory(Command);
             tokenCmdWrapperFactory(Command);
         }
 

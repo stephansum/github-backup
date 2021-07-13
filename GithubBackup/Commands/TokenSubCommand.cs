@@ -27,11 +27,10 @@ namespace GithubBackup
             Command = ParentCommand.Command("token-based", (tokenBasedCmd) =>
             {
                 tokenBasedCmd.Description = "Using a token-based authentication.";
-                tokenBasedCmd.ThrowOnUnexpectedArgument = true;
+                tokenBasedCmd.UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw;
 
                 var tokenArgument = tokenBasedCmd.Argument("Token", "A valid github token.").IsRequired();
-                var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.")
-                                            .Accepts(v => v.ExistingDirectory());
+                var destinationArgument = tokenBasedCmd.Argument("Destination", "The destination folder for the backup.").Accepts(v => v.ExistingDirectory());
 
                 tokenBasedCmd.OnExecute(() =>
                 {

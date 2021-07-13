@@ -7,35 +7,26 @@ All repositories of the given github user will be concurrently cloned to the pro
 
 If you dont provide a destination folder, the backup will be created in your current folder.
 
-You can choose between credential- or token-based authentication. 
-
 </br>
 
 ![github-backup screenshot](screenshot.png?raw=true "github-backup screenshot")
 
 ## Usage
 
-##### creating a backup with credential-based authentification:
-
-```bash
-$ github-backup credential-based <username> <password> [<destination>]
-```
-
-</br>
-
-##### creating a backup with token-based authentification:
 ```bash
 $ github-backup token-based <token> [<destination>]
 ```
+
+You can create a personal access token here: https://github.com/settings/tokens/new
 
 </br>
 
 ## Building
 
-So far I build the application only for win-x64 systems, but it might also work on different platforms.
+So far I tested the application only for win10-x64 systems, but it might also work on different platforms.
 
 ```bash
-$ dotnet publish -r win-x64 -c release /p:TrimUnusedDependencies=true
+$ dotnet publish -r win10-x64 -c release -p:PublishTrimmed=True
 ```
 
 </br>
