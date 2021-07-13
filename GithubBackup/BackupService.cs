@@ -1,6 +1,7 @@
 ﻿using Octokit;
 using ShellProgressBar;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -61,9 +62,9 @@ namespace GithubBackup
             return repos;
         }
 
-        private  Dictionary<string, Exception> CloneRepos(IReadOnlyList<Repository> repos)
+        private ConcurrentDictionary<string, Exception> CloneRepos(IReadOnlyList<Repository> repos)
         {
-            var exceptions = new Dictionary<string, Exception>();
+            var exceptions = new ConcurrentDictionary<string, Exception>();
 
             var rootProgressBarOptions = new ProgressBarOptions
             {
